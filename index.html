@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="NeuroSathi — personalized cognitive engagement and contextual caregiver support." />
+  <title>NeuroSathi | Personal Cognitive Fingerprint</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand"><div class="brand-mark">N</div><div><strong>NeuroSathi</strong><span>Personalized cognitive support</span></div></div>
+      <div class="top-actions"><button class="ghost" id="voiceBtn">◉ Voice</button><button class="profile-pill" id="profileBtn">AS</button></div>
+    </header>
+
+    <main class="page">
+      <section class="hero">
+        <div><p class="eyebrow">COGNITIVE CARE • NER</p><h1>Care that learns the person,<br><em>not just the score.</em></h1><p class="hero-copy">NeuroSathi turns familiar memories, everyday context and activity patterns into a personal cognitive profile — then uses explainable signals to guide the next activity and caregiver attention.</p><div class="hero-actions"><button class="primary" data-view="fingerprint">Explore Personal Fingerprint →</button><button class="secondary" data-view="map">See Contextual Change Map</button></div></div>
+        <div class="hero-card"><div class="status"><span class="dot"></span> Demo profile • local-only</div><div class="orb">🧠</div><div class="hero-stat"><span>Personal anchors</span><strong>10</strong></div><div class="hero-stat"><span>Context checks</span><strong>6</strong></div><div class="hero-stat"><span>Care signals</span><strong>2</strong></div></div>
+      </section>
+
+      <section class="trust-row"><span>✓ Explainable</span><span>✓ Context-aware</span><span>✓ Caregiver-in-the-loop</span><span>✓ No diagnosis</span></section>
+
+      <section class="content-grid">
+        <aside class="sidebar">
+          <button class="nav active" data-view="dashboard">⌂ <span>Overview</span></button>
+          <button class="nav" data-view="fingerprint">◈ <span>Memory Fingerprint</span></button>
+          <button class="nav" data-view="activities">✦ <span>Activities</span></button>
+          <button class="nav" data-view="map">◎ <span>Change Map</span><b>2</b></button>
+          <button class="nav" data-view="memories">♡ <span>My Memories</span></button>
+          <button class="nav" data-view="settings">⚙ <span>Settings</span></button>
+        </aside>
+
+        <div class="workspace">
+          <div id="dashboard" class="view active-view">
+            <div class="section-head"><div><p class="eyebrow">TODAY</p><h2>Good evening, Asha</h2><p>Your support plan is built around what is familiar to you.</p></div><span class="chip safe">● Stable baseline</span></div>
+            <div class="cards three"><article class="metric"><span>Activity accuracy</span><strong>78%</strong><small>+8% vs personal baseline</small><div class="progress"><i style="width:78%"></i></div></article><article class="metric"><span>Familiarity match</span><strong>92%</strong><small>Today's tasks use familiar anchors</small><div class="progress"><i style="width:92%"></i></div></article><article class="metric"><span>Caregiver signals</span><strong>2</strong><small>1 needs context review</small><div class="signal-ring">2</div></article></div>
+            <div class="cards two"><article class="panel recommendation"><div class="panel-title"><span>Next best activity</span><span class="chip">Personalized</span></div><div class="activity-icon">🧩</div><div><h3>Sequence My Day</h3><p>Uses Asha's familiar morning routine: tea → newspaper → garden.</p><button class="text-btn" data-view="activities">Start activity →</button></div></article><article class="panel"><div class="panel-title"><span>Why this activity?</span><span class="info">i</span></div><ul class="reason-list"><li><b>Familiarity</b><span>3/3 anchors match</span></li><li><b>Recent error</b><span>sequence ordering</span></li><li><b>Difficulty</b><span>stepped down one level</span></li><li><b>Context</b><span>no disruption reported</span></li></ul></article></div>
+            <article class="panel journey"><div class="panel-title"><span>How NeuroSathi responds</span><span class="muted">Example pathway</span></div><div class="journey-flow"><div><b>01</b><span>Personal baseline</span><small>Familiar tasks establish a reference</small></div><i>→</i><div><b>02</b><span>New observation</span><small>Accuracy + response pattern</small></div><i>→</i><div><b>03</b><span>Context check</span><small>Language, novelty, fatigue, hints</small></div><i>→</i><div><b>04</b><span>Care signal</span><small>Only repeated familiar deviations escalate</small></div></div></article>
+          </div>
+
+          <div id="fingerprint" class="view"><div class="section-head"><div><p class="eyebrow">CORE DIFFERENTIATOR</p><h2>Personal Cognitive Fingerprint</h2><p>A compact representation of what is meaningful and familiar to this person.</p></div><button class="primary small" id="addAnchor">+ Add anchor</button></div><div class="fingerprint-layout"><article class="panel profile-core"><div class="avatar">AS</div><h3>Asha Sharma</h3><p>Family • Retired teacher • Guwahati</p><div class="tag-list"><span>Tea garden</span><span>Old songs</span><span>School stories</span><span>Grandchildren</span><span>Assamese food</span><span>Morning routine</span></div></article><article class="panel radar-card"><div class="panel-title"><span>Personal domains</span><span class="chip">10 anchors</span></div><div class="domain"><span>Family recall</span><b>92</b><div><i style="width:92%"></i></div></div><div class="domain"><span>Place familiarity</span><b>86</b><div><i style="width:86%"></i></div></div><div class="domain"><span>Object recognition</span><b>81</b><div><i style="width:81%"></i></div></div><div class="domain"><span>Sequence recall</span><b>69</b><div><i style="width:69%"></i></div></div><div class="domain"><span>Delayed recall</span><b>74</b><div><i style="width:74%"></i></div></div></article></div><article class="panel anchor-panel"><div class="panel-title"><span>Memory anchors → activity generation</span><span class="muted">Illustrative</span></div><div class="anchor-grid"><div><b>👨‍👩‍👧 Family</b><span>Granddaughter • Riya</span></div><div><b>📍 Place</b><span>School • Dispur</span></div><div><b>🍵 Routine</b><span>Morning tea</span></div><div><b>🎵 Song</b><span>Favourite old melody</span></div><div><b>📚 Occupation</b><span>Teaching</span></div><div><b>🌱 Hobby</b><span>Garden</span></div></div></article></div>
+
+          <div id="activities" class="view"><div class="section-head"><div><p class="eyebrow">ENGAGEMENT</p><h2>Personalized activities</h2><p>Each activity can draw from the person's own familiar context.</p></div></div><div class="activity-grid"><article class="game-card"><div class="game-icon">🧩</div><h3>Memory Match</h3><p>Match familiar people, objects and places.</p><span>Targets • recognition</span><button class="primary play" data-game="Memory Match">Play</button></article><article class="game-card featured"><div class="game-icon">🗓️</div><h3>Sequence My Day</h3><p>Arrange familiar daily events in the correct order.</p><span>Targets • sequencing</span><button class="primary play" data-game="Sequence My Day">Play</button></article><article class="game-card"><div class="game-icon">🔷</div><h3>Pattern Match</h3><p>Complete patterns while difficulty adapts to recent performance.</p><span>Targets • attention</span><button class="primary play" data-game="Pattern Match">Play</button></article><article class="game-card"><div class="game-icon">🪴</div><h3>Object Recall</h3><p>Recognize everyday objects linked to familiar routines.</p><span>Targets • recall</span><button class="primary play" data-game="Object Recall">Play</button></article></div></div>
+
+          <div id="map" class="view"><div class="section-head"><div><p class="eyebrow">CAREGIVER VIEW</p><h2>Contextual Change Map</h2><p>Signals are not diagnoses. They are prompts to check context and look for repeated change.</p></div><span class="chip alert">2 review items</span></div><div class="map-banner"><div class="map-icon">◎</div><div><strong>Personal baseline → context → repeated deviation</strong><p>The engine weighs familiarity, evidence quality and repetition before producing a caregiver signal.</p></div></div><div class="timeline"><div class="time-item stable"><span class="time-dot"></span><div><small>SEP 08 • BASELINE</small><h3>Stable familiar performance</h3><p>Family recall: 9/10 · garden objects: 8/10 · response time within personal range.</p></div><span class="chip safe">Stable</span></div><div class="time-item neutral"><span class="time-dot"></span><div><small>SEP 11 • NEW CONTEXT</small><h3>Low score on unfamiliar picture set</h3><p>Task novelty was high and language matched only partially.</p></div><span class="chip">No signal</span></div><div class="time-item alert-item"><span class="time-dot"></span><div><small>SEP 14 • REPEATED</small><h3>Sequence error on familiar routine</h3><p>Same familiar sequence missed across 3 attempts. No fatigue/context note recorded.</p><button class="text-btn" id="reviewBtn">Review context →</button></div><span class="chip alert">Review</span></div></div><article class="panel explain"><div><span class="eyebrow">EXPLAINABLE LOGIC</span><h3>Why was this surfaced?</h3></div><div class="logic-row"><span>Familiarity</span><b>High</b><i class="on"></i></div><div class="logic-row"><span>Evidence quality</span><b>High</b><i class="on"></i></div><div class="logic-row"><span>Repeated deviation</span><b>Yes</b><i class="on"></i></div><div class="logic-row"><span>Context override</span><b>Not recorded</b><i></i></div></article></div>
+
+          <div id="memories" class="view"><div class="section-head"><div><p class="eyebrow">PERSONAL CONTEXT</p><h2>My Memories</h2><p>These anchors make activities familiar and meaningful.</p></div><button class="primary small" id="memoryBtn">+ Add memory</button></div><div class="memory-grid"><article class="memory"><span>👩‍🏫</span><h3>My school days</h3><p>Teaching at the school in Dispur.</p><small>Occupation • Place</small></article><article class="memory"><span>🌱</span><h3>Tea garden mornings</h3><p>Walking through the garden after morning tea.</p><small>Routine • Place</small></article><article class="memory"><span>👧</span><h3>Riya's birthday</h3><p>A family celebration remembered through photos.</p><small>Family • Event</small></article><article class="memory"><span>🎵</span><h3>Favourite old song</h3><p>A familiar melody used as a recall cue.</p><small>Music • Cue</small></article></div></div>
+
+          <div id="settings" class="view"><div class="section-head"><div><p class="eyebrow">CONTROL & PRIVACY</p><h2>Settings</h2><p>Designed for transparent, caregiver-supported use.</p></div></div><article class="panel settings-list"><div><b>Demo data storage</b><span>Local browser storage only</span><button class="secondary" id="clearData">Clear demo data</button></div><div><b>Caregiver feedback</b><span>Context notes can override a misleading signal.</span><button class="secondary" id="feedbackBtn">Add context</button></div><div><b>Clinical boundary</b><span>NeuroSathi does not diagnose dementia or replace medical care.</span><span class="chip safe">Protected</span></div><div><b>Voice assistance</b><span>Uses browser speech features where supported.</span><button class="secondary" id="speakTest">Test voice</button></div></article></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal" id="modal"><div class="modal-card"><button class="close" id="closeModal">×</button><div id="modalContent"></div></div></div>
+  <div class="toast" id="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>
