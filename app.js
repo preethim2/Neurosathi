@@ -1,241 +1,97 @@
-const patientPortal=document.getElementById('patientPortal');
-const caregiverPortal=document.getElementById('caregiverPortal');
-const portalButtons=[...document.querySelectorAll('.portal-btn')];
-const modal=document.getElementById('modal');
-const modalContent=document.getElementById('modalContent');
-const toast=document.getElementById('toast');
-
-/* ---------------------------------------------------------
-   NeuroSathi opening flow: homepage -> portal selection -> app
-   --------------------------------------------------------- */
-function createOpeningFlow(){
-  if(document.getElementById('neuroBoot'))return;
-  const boot=document.createElement('div');
-  boot.id='neuroBoot';
-  boot.className='neuro-boot';
-  boot.innerHTML=`
-    <div class="boot-card" id="bootWelcome">
-      <div class="boot-mark">N</div>
-      <p class="eyebrow">COGNITIVE CARE • NER</p>
-      <h1>NeuroSathi</h1>
-      <p>Personalized cognitive engagement and caregiver support.</p>
-      <button class="primary boot-button" id="bootEnter">Enter NeuroSathi →</button>
-      <small>For cognitive engagement and caregiver support. Not a diagnostic system.</small>
-    </div>
-    <div class="boot-card boot-role-card hidden" id="bootRoles">
-      <div class="boot-mark">N</div>
-      <p class="eyebrow">WELCOME TO NEUROSATHI</p>
-      <h1>Choose your portal</h1>
-      <p>Select the experience you need.</p>
-      <div class="boot-role-grid">
-        <button class="boot-role" data-boot-role="patient"><span>🙂</span><div><b>Patient Portal</b><small>Activities, memories, My Day & help</small></div><i>→</i></button>
-        <button class="boot-role" data-boot-role="caregiver"><span>🤝</span><div><b>Caregiver Portal</b><small>Patient profile, memories, monitoring & insights</small></div><i>→</i></button>
-      </div>
-      <small>Demo profile: Asha Sharma • Local browser prototype</small>
-    </div>`;
-  document.body.prepend(boot);
-  document.getElementById('bootEnter').onclick=()=>{
-    document.getElementById('bootWelcome').classList.add('hidden');
-    document.getElementById('bootRoles').classList.remove('hidden');
-  };
-  boot.querySelectorAll('[data-boot-role]').forEach(btn=>btn.onclick=()=>{
-    showPortal(btn.dataset.bootRole);
-    boot.classList.add('boot-exit');
-    setTimeout(()=>boot.remove(),260);
-  });
-}
-
-function showPortal(role){
-  const patient=role==='patient';
-  patientPortal.classList.toggle('active-portal',patient);
-  caregiverPortal.classList.toggle('active-portal',!patient);
-  portalButtons.forEach(b=>b.classList.toggle('active',b.dataset.portal===role));
-  const target=patient?'patientHome':'caregiverHome';
-  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active-view'));
-  const targetEl=document.getElementById(target); if(targetEl)targetEl.classList.add('active-view');
-  document.querySelectorAll('.nav').forEach(n=>n.classList.remove('active'));
-  const first=document.querySelector(`.nav[data-view="${target}"]`); if(first)first.classList.add('active');
-  const roleText=document.querySelector('.role-label');
-  document.body.dataset.portal=role;
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-portalButtons.forEach(b=>b.addEventListener('click',()=>showPortal(b.dataset.portal)));
-
-function showView(id){
-  const target=document.getElementById(id); if(!target)return;
-  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active-view',v===target));
-  document.querySelectorAll('.nav').forEach(n=>n.classList.toggle('active',n.dataset.view===id));
-  window.scrollTo({top:document.querySelector('.content-grid').offsetTop-90,behavior:'smooth'});
-}
-document.querySelectorAll('[data-view]').forEach(n=>n.addEventListener('click',()=>showView(n.dataset.view)));
-
-/* ---------------------------------------------------------
-   Profile + voice
-   --------------------------------------------------------- */
-const profileBtn=document.getElementById('profileBtn');
-if(profileBtn)profileBtn.onclick=()=>openModal('<p class="eyebrow">DEMO PROFILE</p><h3>Asha Sharma</h3><p>Retired teacher • Guwahati. This demo profile shows how personal memory anchors can support familiar activities and caregiver review.</p><div class="demo-options"><button class="demo-option">10 personal memory anchors loaded</button><button class="demo-option">Personal baseline established</button><button class="demo-option">Caregiver feedback enabled</button></div>');
-const voiceBtn=document.getElementById('voiceBtn');
-if(voiceBtn)voiceBtn.onclick=()=>speak('Welcome to NeuroSathi. Your portal and activities are personalized around familiar routines.');
-const speakTest=document.getElementById('speakTest'); if(speakTest)speakTest.onclick=()=>speak('This is a browser voice assistance test for NeuroSathi.');
-const patientSpeak=document.getElementById('patientSpeak'); if(patientSpeak)patientSpeak.onclick=()=>speak('You can choose Memory Match, Sequence My Day, Pattern Match, or Object Recall. Ask your caregiver for help if needed.');
-function speak(text){
-  if(!('speechSynthesis' in window)){toastMsg('Voice is not supported by this browser.');return;}
-  speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=.92;speechSynthesis.speak(u);toastMsg('Voice assistance started');
-}
-
-/* ---------------------------------------------------------
-   Modal helpers
-   --------------------------------------------------------- */
-function openModal(html){modalContent.innerHTML=html;modal.classList.add('open')}
-if(document.getElementById('closeModal'))document.getElementById('closeModal').onclick=()=>modal.classList.remove('open');
-modal.addEventListener('click',e=>{if(e.target===modal)modal.classList.remove('open')});
-function toastMsg(text){toast.textContent=text;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2400)}
-
-/* ---------------------------------------------------------
-   Original activity interactions preserved
-   --------------------------------------------------------- */
-function activityModal(game,anchor='Garden'){
-  openModal(`<p class="eyebrow">PATIENT ACTIVITY</p><h3>${game}</h3><p>This activity uses an approved personal memory anchor: <b>${anchor}</b>. The prototype records the response pattern and can adapt the next task.</p><div class="demo-options"><button class="demo-option" onclick="toastMsg('Correct response recorded');document.getElementById('closeModal').click()">✓ Familiar item — ${anchor}</button><button class="demo-option" onclick="toastMsg('Response pattern recorded');document.getElementById('closeModal').click()">✓ Familiar item — Morning tea</button><button class="demo-option" onclick="toastMsg('Hint used — context recorded');document.getElementById('closeModal').click()">? Need a hint</button></div>`);
-}
-document.querySelectorAll('.play').forEach(btn=>btn.onclick=()=>activityModal(btn.dataset.game));
-
-/* ---------------------------------------------------------
-   Contextual Change Map review
-   --------------------------------------------------------- */
-const reviewBtn=document.getElementById('reviewBtn');
-if(reviewBtn)reviewBtn.onclick=()=>openModal('<p class="eyebrow">CAREGIVER CHECK</p><h3>Before treating this as a change</h3><p>Was there a temporary context factor today? For example: fatigue, unfamiliar language, hearing difficulty, distraction, medication timing, illness or a change in routine.</p><div class="demo-options"><button class="demo-option" onclick="toastMsg(\'Context: tired today — signal softened\');document.getElementById(\'closeModal\').click()">Yes — temporary fatigue</button><button class="demo-option" onclick="toastMsg(\'No context found — observation retained\');document.getElementById(\'closeModal\').click()">No — no context found</button><button class="demo-option" onclick="toastMsg(\'Context note saved\');document.getElementById(\'closeModal\').click()">Add another note</button></div>');
-
-/* ---------------------------------------------------------
-   Personal Memory Builder + Personalized Activity Engine
-   This is an explainable prototype engine, not a trained ML model.
-   --------------------------------------------------------- */
-const defaultMemories=[
-  {type:'Family',title:'Riya',detail:'Granddaughter • family',icon:'👧'},
-  {type:'Place',title:'Dispur School',detail:'School where Asha taught',icon:'📍'},
-  {type:'Routine',title:'Morning tea',detail:'Tea → newspaper → garden',icon:'☕'},
-  {type:'Hobby',title:'Tea garden',detail:'Favourite garden walk',icon:'🌱'},
-  {type:'Music',title:'Favourite old song',detail:'Familiar melody cue',icon:'🎵'},
-  {type:'Occupation',title:'Teaching',detail:'Retired teacher',icon:'👩‍🏫'}
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const store={get:(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}},set:(k,v)=>localStorage.setItem(k,JSON.stringify(v))};
+const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+const patient={name:'Asha Sharma',age:72,region:'Guwahati, Assam',caregiver:'Meera Sharma',relationship:'Daughter',language:'Assamese'};
+let memories=store.get('ns_memories',null)||[
+ {id:1,type:'Family',title:'Riya',relation:'Granddaughter',detail:'Riya is Asha’s granddaughter. They celebrate birthdays together.',story:'Asha remembers Riya’s birthday celebrations and family evenings.',date:'12 Sep 2026',icon:'👧'},
+ {id:2,type:'Family',title:'Meera',relation:'Daughter',detail:'Meera visits every morning and helps with medicines.',story:'Morning conversations with Meera are part of Asha’s daily rhythm.',date:'13 Sep 2026',icon:'👩'},
+ {id:3,type:'Place',title:'Dispur School',detail:'The school where Asha taught for many years.',story:'This is where Asha spent many years teaching children in Dispur.',date:'08 Sep 2026',icon:'🏫'},
+ {id:4,type:'Place',title:'Family Home',detail:'The home where the family gathers during festivals.',story:'Family members gather here for food, stories and celebrations.',date:'10 Sep 2026',icon:'🏠'},
+ {id:5,type:'Routine',title:'Morning Tea',detail:'Tea → newspaper → garden walk.',story:'Asha starts the morning with tea, the newspaper and a short garden walk.',date:'14 Sep 2026',icon:'☕'},
+ {id:6,type:'Object',title:'Old Blue Car',detail:'A familiar family car used for outings.',story:'The blue car reminds Asha of family trips and market visits.',date:'09 Sep 2026',icon:'🚙'},
+ {id:7,type:'Object',title:'Childhood Toy',detail:'An old toy kept as a family keepsake.',story:'A small old toy brings back stories from Asha’s childhood.',date:'06 Sep 2026',icon:'🧸'},
+ {id:8,type:'Event',title:'Family Picnic',relation:'Family',detail:'Family picnic at the riverside on 04 Sep 2026.',story:'On 04 September, Asha went to a riverside picnic with her family. They ate together, talked and took photographs.',date:'04 Sep 2026',icon:'🌳'}
 ];
-let memories=JSON.parse(localStorage.getItem('neurosathi_memories')||'null')||defaultMemories;
-
-function saveMemories(){localStorage.setItem('neurosathi_memories',JSON.stringify(memories));}
-
-function memoryCard(m){
-  return `<div class="memory-anchor-card"><span>${m.icon||'🧠'}</span><div><b>${escapeHtml(m.title)}</b><small>${escapeHtml(m.type)} • ${escapeHtml(m.detail)}</small></div></div>`;
+let reminders=store.get('ns_reminders',null)||[
+ {id:1,time:'09:00 AM',title:'Take prescribed medicine',detail:'As prescribed by doctor',icon:'💊'},
+ {id:2,time:'10:30 AM',title:'Drink water',detail:'1 glass',icon:'💧'},
+ {id:3,time:'12:30 PM',title:'Lunch',detail:'Family routine',icon:'🍲'},
+ {id:4,time:'04:30 PM',title:'One memory game',detail:'10 minutes',icon:'🧩'},
+ {id:5,time:'06:00 PM',title:'Evening walk',detail:'Familiar route',icon:'🚶'}
+];
+let activityLog=store.get('ns_activityLog',null)||[
+ {date:'Today',game:'Identify the Person',domain:'Recognition',accuracy:90,level:2,duration:'6m',status:'Completed'},
+ {date:'Today',game:'Memory by Picture',domain:'Recall',accuracy:80,level:2,duration:'7m',status:'Completed'},
+ {date:'Yesterday',game:'Routine Recall',domain:'Sequencing',accuracy:60,level:2,duration:'9m',status:'Review'},
+ {date:'Sep 12',game:'Who Is This?',domain:'Recognition',accuracy:100,level:1,duration:'5m',status:'Completed'}
+];
+let journals=store.get('ns_journals',[]);
+let settings=store.get('ns_settings',{voice:true,large:true,contrast:false,blue:false});
+function saveAll(){store.set('ns_memories',memories);store.set('ns_reminders',reminders);store.set('ns_activityLog',activityLog);store.set('ns_journals',journals);store.set('ns_settings',settings)}
+function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2300)}
+function speak(text){if(!('speechSynthesis'in window)){toast('Voice is not supported in this browser');return}speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=.9;u.pitch=1;speechSynthesis.speak(u);toast('Voice started')}
+function openModal(title,body){$('#modalTitle').textContent=title;$('#modalBody').innerHTML=body;$('#modal').classList.add('open')}
+function closeModal(){$('#modal').classList.remove('open')}
+$('#closeModal').onclick=closeModal;$('#modal').onclick=e=>{if(e.target.id==='modal')closeModal()};
+function showPortal(role){const p=role==='patient';$('#patientPortal').classList.toggle('active',p);$('#caregiverPortal').classList.toggle('active',!p);$$('.portal-btn').forEach(b=>b.classList.toggle('active',b.dataset.portal===role));showView(p?'pHome':'cDashboard');window.scrollTo({top:0,behavior:'smooth'})}
+function showView(id){const target=$('#'+id);if(!target)return;const portal=target.closest('.portal');if(!portal)return;portal.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v===target));portal.querySelectorAll('.nav').forEach(n=>n.classList.toggle('active',n.dataset.view===id));window.scrollTo({top:Math.max(0,portal.offsetTop-82),behavior:'smooth'});if(id==='pGames')renderPatientGames();if(id==='pMemories'){renderPatientMemories();renderStory()}if(id==='pDay')renderPatientRoutines();if(id==='cMemories'){renderCaregiverMemories();renderCaregiverGames()}if(id==='cReminders')renderReminders();if(id==='cActivities')renderActivityTable();if(id==='cTrends')renderTrends()}
+$$('.portal-btn').forEach(b=>b.onclick=()=>showPortal(b.dataset.portal));$$('.nav').forEach(n=>n.onclick=()=>showView(n.dataset.view));$$('[data-goto]').forEach(b=>b.onclick=()=>showView(b.dataset.goto));
+$('#enterBtn').onclick=()=>{$('#welcome').classList.add('hidden');$('#roles').classList.remove('hidden')};$$('[data-role]').forEach(b=>b.onclick=()=>{showPortal(b.dataset.role);$('#boot').classList.add('hidden')});
+$('#voiceBtn').onclick=()=>speak(`Good morning ${patient.name}. You have ${reminders.length} reminders and personalized memory activities waiting for you.`);
+$('#profileBtn').onclick=()=>openModal('Profile',`<p><b>${patient.name}</b><br>${patient.age} years • ${patient.region}</p><div class="demo-options"><button class="demo-option">Caregiver: ${patient.caregiver}</button><button class="demo-option">Relationship: ${patient.relationship}</button><button class="demo-option">Language: ${patient.language}</button></div>`);
+$('#patientCompanion').onclick=()=>openModal('NeuroSathi Voice Companion',`<p>Talk naturally. Ask me to read your day, open memories, or start a game.</p><div class="demo-options"><button class="demo-option" id="compRead">🔊 Read my day</button><button class="demo-option" id="compGames">🧩 Open my games</button></div>`);
+$('#readRoutine').onclick=()=>speak('Today: '+reminders.map(r=>`${r.time}, ${r.title}`).join('. '));
+$('#compRead')?.addEventListener('click',()=>{closeModal();$('#readRoutine').click()});$('#compGames')?.addEventListener('click',()=>{closeModal();showView('pGames')});
+function generatedGame(m){
+ const map={
+  Family:{title:'Identify the Person',domain:'Recognition',question:`Who is ${m.title}?`,instruction:'Look at the familiar person and choose their name.',type:'person'},
+  Place:{title:'Where Is This?',domain:'Place Recall',question:'Which familiar place is this?',instruction:'Recognise the place and connect it to its memory.',type:'place'},
+  Routine:{title:'My Routine',domain:'Sequencing',question:'What comes next in this routine?',instruction:'Put your familiar routine in the right order.',type:'routine'},
+  Object:{title:'My Familiar Object',domain:'Recognition',question:'What is this familiar object?',instruction:'Recognise an object from your own life.',type:'object'},
+  Event:{title:'Memory Refinding',domain:'Autobiographical Recall',question:'What happened in this memory?',instruction:'Use the picture or story to find the right memory.',type:'story'},
+  Hobby:{title:'My Favourite Activity',domain:'Association',question:'Which activity belongs to this memory?',instruction:'Connect the familiar hobby to its story.',type:'hobby'},
+  Music:{title:'Memory Song Cue',domain:'Association',question:'What memory does this cue bring back?',instruction:'Use a familiar song or voice cue to recall a memory.',type:'music'},
+  Occupation:{title:'My Work Story',domain:'Semantic Recall',question:'What do you remember about this work?',instruction:'Connect the familiar work memory to its story.',type:'work'}
+ };const x=map[m.type]||map.Object;return {...x,m};
 }
-function escapeHtml(v){return String(v).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
-
-function renderMemoryBuilder(){
-  const grid=document.getElementById('dynamicMemoryGrid');
-  if(grid)grid.innerHTML=memories.map(memoryCard).join('');
-  const count=document.getElementById('memoryCount');
-  if(count)count.textContent=`${memories.length} anchors`;
-  renderGeneratedGames();
+function mediaHTML(m,cls='media-thumb'){if(m.image)return `<img class="${cls}" src="${m.image}" alt="${esc(m.title)}">`;if(m.video)return `<video class="${cls}" src="${m.video}" controls></video>`;return `<div style="font-size:52px">${m.icon||'🧠'}</div>`}
+function gameCard(g){return `<article class="game-card"><div class="game-top"><div class="game-icon">${g.m.icon||'🧩'}</div><div><span class="activity-type">PERSONALIZED • ${esc(g.domain)}</span><h3>${esc(g.title)}</h3></div></div>${g.m.image?`<img class="media-thumb" src="${g.m.image}" alt="${esc(g.m.title)}" style="margin-top:12px">`:''}<p>${esc(g.instruction)}</p><div class="game-meta"><span class="tag">Source: ${esc(g.m.title)}</span><span class="tag">Caregiver approved</span></div><button class="btn btn-primary play-generated" data-id="${g.m.id}">Play game</button></article>`}
+function renderPatientGames(){$('#patientGames').innerHTML=memories.slice(0,10).map(m=>gameCard(generatedGame(m))).join('')||'<div class="empty">No memories have been added yet. Ask your caregiver to add one.</div>';$$('.play-generated').forEach(b=>b.onclick=()=>startGame(+b.dataset.id))}
+function renderCaregiverGames(){$('#caregiverGames').innerHTML=memories.slice(0,10).map(m=>{const g=generatedGame(m);return `<article class="game-card"><div class="game-top"><div class="game-icon">${m.icon||'🧩'}</div><div><span class="activity-type">READY</span><h3>${esc(g.title)}</h3></div></div><p>${esc(g.instruction)}</p><small class="source">Source memory: ${esc(m.title)} • ${esc(m.type)}</small><span class="chip safe">✓ Generated instantly</span></article>`}).join('')}
+function startGame(id){const m=memories.find(x=>x.id===id);if(!m)return;const g=generatedGame(m);const others=memories.filter(x=>x.id!==id).slice(0,3);let choices=[];let prompt=g.question;
+ if(g.type==='routine'){choices=['Tea','Newspaper','Garden walk','Dinner'];if(m.detail.includes('Tea'))choices=['Tea','Garden walk','Medicine','Lunch']}
+ else if(g.type==='story'){choices=[m.title,...others.map(x=>x.title)].slice(0,4)}
+ else if(g.type==='person'){choices=[m.title,...others.filter(x=>x.type==='Family').map(x=>x.title),'Doctor'].slice(0,4)}
+ else choices=[m.title,...others.map(x=>x.title)].slice(0,4);
+ choices=[...new Set(choices)];while(choices.length<4)choices.push(['Family','Garden','Old car','Morning'][choices.length-1]);
+ openModal(g.title,`<p><b>${esc(prompt)}</b></p><div class="game-play">${mediaHTML(m)}<p>${esc(g.instruction)}</p></div><div class="choices">${choices.map(c=>`<button class="choice" data-answer="${esc(c)}">${esc(c)}</button>`).join('')}</div><p class="switcher-note">This is a cognitive engagement activity, not a diagnostic test.</p>`);
+ $$('.choice').forEach(c=>c.onclick=()=>{const correct=(g.type==='routine'?c.dataset.answer==='Tea':c.dataset.answer===m.title);recordActivity(g,correct);closeModal();toast(correct?'Correct response recorded':'Response recorded — context retained');});
 }
-
-function generatedGameForMemory(m,index){
-  const templates={
-    Family:['Who Is Who?','Match family members with familiar stories.','recognition'],
-    Place:['Familiar Places','Match places with the memories connected to them.','place recall'],
-    Routine:['My Routine','Put familiar daily events in the correct order.','sequencing'],
-    Hobby:['Familiar Hobby Match','Identify objects and activities linked to a favourite hobby.','recognition'],
-    Music:['Memory Cue Match','Use a familiar song cue to recall its associated memory.','association'],
-    Occupation:['My Work Story','Match familiar work objects with the right story.','semantic recall'],
-    Event:['Memory Story Match','Connect a meaningful event to its people and place.','association'],
-    Object:['Everyday Object Recall','Recognise an object from a familiar routine.','object recall']
-  };
-  const t=templates[m.type]||templates.Object;
-  return {title:t[0],description:`Built from “${m.title}” — ${m.detail}.`,target:t[2],anchor:m,index};
-}
-
-function generatedGames(){
-  return memories.slice(0,8).map((m,i)=>generatedGameForMemory(m,i));
-}
-
-function gameCard(g,caregiver=false){
-  return `<article class="game-card generated-game ${caregiver?'care-generated':''}">
-    <div class="game-icon">${g.anchor.icon||'🧩'}</div>
-    <span class="activity-type">AI-PERSONALIZED • ${escapeHtml(g.target.toUpperCase())}</span>
-    <h3>${escapeHtml(g.title)}</h3>
-    <p>${escapeHtml(g.description)}</p>
-    <small class="source-anchor">Source memory: ${escapeHtml(g.anchor.title)}</small>
-    ${caregiver?'<div class="generated-status">✓ Generated from approved memory</div>':'<button class="primary generated-play">Play</button>'}
-  </article>`;
-}
-
-function renderGeneratedGames(){
-  const games=generatedGames();
-  const care=document.getElementById('generatedCareGames');
-  if(care)care.innerHTML=games.map(g=>gameCard(g,true)).join('');
-  const patient=document.getElementById('generatedPatientGames');
-  if(patient)patient.innerHTML=games.map(g=>gameCard(g,false)).join('');
-  document.querySelectorAll('.generated-play').forEach(btn=>{
-    btn.onclick=()=>{
-      const card=btn.closest('.generated-game');
-      const title=card.querySelector('h3').textContent;
-      const source=card.querySelector('.source-anchor').textContent.replace('Source memory: ','');
-      activityModal(title,source);
-    };
-  });
-}
-
-function openMemoryForm(){
-  openModal(`<p class="eyebrow">CAREGIVER MEMORY PAGE</p><h3>Add a familiar memory</h3><p>Add information that is meaningful and caregiver-approved. The prototype immediately uses the new anchor to create a personalized activity.</p>
-    <div class="memory-form">
-      <label>Memory type<select id="memoryType"><option>Family</option><option>Place</option><option>Routine</option><option>Hobby</option><option>Music</option><option>Occupation</option><option>Event</option><option>Object</option></select></label>
-      <label>Name / title<input id="memoryTitle" placeholder="e.g. Riya's birthday" /></label>
-      <label>What makes it familiar?<textarea id="memoryDetail" placeholder="e.g. Family celebration every year"></textarea></label>
-      <button class="primary" id="saveMemory">Save memory & generate activity →</button>
-    </div>`);
-  document.getElementById('saveMemory').onclick=()=>{
-    const type=document.getElementById('memoryType').value;
-    const title=document.getElementById('memoryTitle').value.trim();
-    const detail=document.getElementById('memoryDetail').value.trim()||'Caregiver-approved familiar context';
-    if(!title){toastMsg('Please add a memory title');return;}
-    const icons={Family:'👨‍👩‍👧',Place:'📍',Routine:'☀',Hobby:'🌱',Music:'🎵',Occupation:'👩‍🏫',Event:'🎉',Object:'🔎'};
-    memories.push({type,title,detail,icon:icons[type]||'🧠'});
-    saveMemories();renderMemoryBuilder();
-    modal.classList.remove('open');
-    showView('caregiverMemories');
-    toastMsg(`Memory added — new ${type.toLowerCase()} activity generated`);
-  };
-}
-
-function addMemoryExperience(){
-  const existing=document.getElementById('caregiverMemories');
-  if(existing)return;
-  const portal=caregiverPortal;
-  const workspace=portal.querySelector('.workspace');
-  const view=document.createElement('div');
-  view.id='caregiverMemories';view.className='view';
-  view.innerHTML=`<div class="section-head"><div><p class="eyebrow">PERSONAL MEMORY FINGERPRINT</p><h2>Memory & Context Builder</h2><p>Add the person's familiar people, places, routines, hobbies, songs, work and meaningful events.</p></div><button class="primary small" id="dynamicAddMemory">+ Add memory</button></div>
-    <article class="memory-builder panel"><div class="builder-copy"><span class="builder-icon">🧠</span><div><h3>Life memories → Personal Cognitive Fingerprint → Personalized games</h3><p>NeuroSathi collects caregiver-approved memory anchors and converts them into context for activity generation. The prototype uses transparent rules so the source memory is always visible.</p></div><span class="chip safe" id="memoryCount">6 anchors</span></div><div class="anchor-grid dynamic-anchor-grid" id="dynamicMemoryGrid"></div></article>
-    <article class="panel generator-panel"><div class="panel-title"><span>Personalized Activity Engine</span><span class="chip safe">Working</span></div><div class="generator-flow"><span>Approved memories</span><i>→</i><span>Personal Cognitive Fingerprint</span><i>→</i><span>Game template</span><i>→</i><strong>Personalized game</strong></div><p class="engine-note">Example: adding “Riya — granddaughter” creates a family-recognition activity; adding “Morning tea → newspaper → garden” creates a sequencing activity.</p><button class="primary" id="dynamicGenerate">Generate new games from all memories →</button></article>
-    <article class="panel"><div class="panel-title"><span>Generated games</span><span class="muted">Source memory is shown for explainability</span></div><div id="generatedCareGames" class="activity-grid"></div></article>`;
-  workspace.appendChild(view);
-  const nav=portal.querySelector('.sidebar');
-  const button=document.createElement('button');button.className='nav';button.dataset.view='caregiverMemories';button.innerHTML='♡ <span>Memory Anchors</span>';nav.appendChild(button);button.onclick=()=>showView('caregiverMemories');
-  document.getElementById('dynamicAddMemory').onclick=openMemoryForm;
-  document.getElementById('dynamicGenerate').onclick=()=>{renderGeneratedGames();toastMsg(`${memories.length} memories analysed — personalized games refreshed`)};
-  renderMemoryBuilder();
-}
-
-/* Existing add-anchor buttons are retained, but the main caregiver memory page is now richer. */
-function addAnchorModal(){openMemoryForm();}
-const addAnchor=document.getElementById('addAnchor');if(addAnchor)addAnchor.onclick=addAnchorModal;
-const memoryBtn=document.getElementById('memoryBtn');if(memoryBtn)memoryBtn.onclick=addAnchorModal;
-const feedbackBtn=document.getElementById('feedbackBtn');if(feedbackBtn)feedbackBtn.onclick=()=>reviewBtn?reviewBtn.click():addAnchorModal();
-const clearData=document.getElementById('clearData');if(clearData)clearData.onclick=()=>{localStorage.clear();memories=[...defaultMemories];renderMemoryBuilder();toastMsg('Demo browser data cleared')};
-
-/* Add dynamic caregiver memory page and personalized patient games without removing existing UI. */
-addMemoryExperience();
-const patientActivities=document.getElementById('patientActivities');
-if(patientActivities){
-  const generatedSection=document.createElement('section');generatedSection.className='generated-section';generatedSection.innerHTML=`<div class="activity-section-label">GENERATED FROM YOUR MEMORIES</div><div id="generatedPatientGames" class="activity-grid"></div><div class="patient-note">These are personalized from caregiver-approved memory anchors. This prototype uses explainable rules; it is not a trained clinical AI model.</div>`;
-  patientActivities.appendChild(generatedSection);
-}
-
-localStorage.setItem('neurosathi_demo_version','3.0');
-createOpeningFlow();
-showPortal('patient');
+function recordActivity(g,correct){activityLog.unshift({date:'Today',game:g.title,domain:g.domain,accuracy:correct?100:50,level:2,duration:'5m',status:correct?'Completed':'Review'});activityLog=activityLog.slice(0,20);saveAll();renderActivityTable();renderTrends()}
+function renderActivityTable(){const t=$('#activityTable');if(!t)return;t.innerHTML=activityLog.map(a=>`<tr><td>${esc(a.date)}</td><td>${esc(a.game)}</td><td>${esc(a.domain)}</td><td>${a.accuracy}%</td><td>${a.level}</td><td>${esc(a.duration)}</td><td><span class="status-pill ${a.status==='Completed'?'status-good':'status-review'}">${esc(a.status)}</span></td></tr>`).join('')}
+function renderPatientMemories(){const grid=$('#patientMemoryGrid');if(!grid)return;grid.innerHTML=memories.map(m=>`<article class="card memory-card"><div class="memory-media">${mediaHTML(m)}</div><div class="memory-body"><h3>${esc(m.title)}</h3><p>${esc(m.story||m.detail)}</p><small>${esc(m.type)} • ${esc(m.date||'Personal memory')}</small><div class="story-actions"><button class="btn btn-soft btn-small" data-story="${m.id}">Open story</button><button class="btn btn-ghost btn-small" data-voice-memory="${m.id}">🔊 Listen</button></div></div></article>`).join('');$$('[data-story]').forEach(b=>b.onclick=()=>{const m=memories.find(x=>x.id==b.dataset.story);showStory(m)});$$('[data-voice-memory]').forEach(b=>b.onclick=()=>{const m=memories.find(x=>x.id==b.dataset.voiceMemory);speak(narrative(m))})}
+function narrative(m){return `On ${m.date||'this day'}, you remembered ${m.title}. ${m.story||m.detail}. It was a meaningful memory with people and places familiar to you.`}
+let storyIndex=0;function renderStory(){if(!$('#patientStory'))return;if(!memories.length){$('#patientStory').innerHTML='<div class="empty">No memories yet.</div>';return}if(storyIndex>=memories.length)storyIndex=0;showStory(memories[storyIndex])}
+function showStory(m){storyIndex=Math.max(0,memories.findIndex(x=>x.id===m.id));const media=m.image?`<img src="${m.image}" alt="${esc(m.title)}">`:`<div style="height:100%;display:grid;place-items:center;font-size:75px">${m.icon||'📖'}</div>`;$('#patientStory').innerHTML=`<div class="story-media">${media}<div class="story-overlay"><b>${esc(m.title)}</b><span>${esc(m.date||'Personal memory')} • ${esc(m.type)}</span></div></div><div class="story-actions"><button class="btn btn-soft" id="listenStory">🔊 Listen to story</button><button class="btn btn-ghost" id="nextStory">Next memory →</button></div>`;$('#listenStory').onclick=()=>speak(narrative(m));$('#nextStory').onclick=()=>{storyIndex=(storyIndex+1)%memories.length;showStory(memories[storyIndex])}}
+function renderPatientRoutines(){const box=$('#patientRoutines');if(!box)return;box.innerHTML=reminders.map(r=>`<div class="routine"><div class="time">${esc(r.time)}</div><div class="task-icon">${r.icon||'🔔'}</div><div class="routine-main"><b>${esc(r.title)}</b><small>${esc(r.detail||'Caregiver reminder')}</small></div><button class="btn btn-soft btn-small" data-routine-done="${r.id}">Done</button></div>`).join('');$$('[data-routine-done]').forEach(b=>b.onclick=()=>{b.textContent='Done ✓';b.classList.add('done');toast('Routine marked complete')})}
+function renderCaregiverMemories(){const box=$('#memoryAnchors');if(!box)return;box.innerHTML=memories.map(m=>`<div class="anchor"><span>${m.icon||'🧠'}</span><div><b>${esc(m.title)}</b><small>${esc(m.type)} • ${esc(m.relation||m.detail)}</small></div></div>`).join('')}
+function addMemoryModal(){openModal('Add a new memory',`<p>Anything meaningful can become a personalized game: a family member, place, object, event, routine, song or story.</p><div class="form-grid"><div class="field"><label>Memory type</label><select id="mType"><option>Family</option><option>Place</option><option>Object</option><option>Event</option><option>Routine</option><option>Hobby</option><option>Music</option><option>Occupation</option></select></div><div class="field"><label>Title / name</label><input id="mTitle" placeholder="e.g. Dad's old car"></div><div class="field"><label>Relationship (if relevant)</label><input id="mRelation" placeholder="e.g. Father"></div><div class="field"><label>Date / year</label><input id="mDate" placeholder="e.g. 1998 or 04 Sep 2026"></div><div class="field full"><label>What should the patient remember?</label><textarea id="mDetail" placeholder="Describe the people, place, object or event in simple words."></textarea></div><div class="field full"><label>Short story for the storybook</label><textarea id="mStory" placeholder="Write the memory as a short, warm story."></textarea></div></div><div class="memory-upload" style="margin-top:12px"><label>📷 Photo<input id="mImage" type="file" accept="image/*"></label><label>🎥 Video<input id="mVideo" type="file" accept="video/*"></label><label>🎙 Voice<input id="mAudio" type="file" accept="audio/*"></label></div><div class="modal-actions"><button class="btn btn-ghost" id="cancelMemory">Cancel</button><button class="btn btn-primary" id="saveMemory">Save & generate games</button></div>`);$('#cancelMemory').onclick=closeModal;$('#saveMemory').onclick=saveMemory}
+async function fileData(id){const f=$(id)?.files?.[0];if(!f)return null;return new Promise(resolve=>{if(f.type.startsWith('image/')){const r=new FileReader();r.onload=()=>resolve({data:r.result,name:f.name,type:f.type});r.readAsDataURL(f)}else resolve({data:null,name:f.name,type:f.type})})}
+async function saveMemory(){const title=$('#mTitle').value.trim();if(!title){toast('Add a memory title');return}const type=$('#mType').value;const image=await fileData('#mImage'),video=await fileData('#mVideo'),audio=await fileData('#mAudio');const icons={Family:'👨‍👩‍👧',Place:'📍',Object:'🔎',Event:'🎉',Routine:'☀️',Hobby:'🌱',Music:'🎵',Occupation:'👩‍🏫'};memories.unshift({id:Date.now(),type,title,relation:$('#mRelation').value.trim(),detail:$('#mDetail').value.trim()||'Caregiver-approved familiar memory',story:$('#mStory').value.trim()||$('#mDetail').value.trim()||`A meaningful memory about ${title}.`,date:$('#mDate').value.trim()||'Today',icon:icons[type],image:image?.data||null,video:video?.data||null,audioName:audio?.name||null});saveAll();closeModal();renderCaregiverMemories();renderCaregiverGames();renderPatientGames();renderPatientMemories();renderStory();toast(`Memory saved — ${generatedGame(memories[0]).title} generated`);showView('cMemories')}
+$('#addMemoryBtn').onclick=addMemoryModal;$('#patientAddMemory').onclick=()=>{showPortal('caregiver');showView('cMemories');addMemoryModal()};
+function addReminderModal(){openModal('Add routine or reminder',`<p>Add the care instruction that should appear in the patient's My Day page.</p><div class="form-grid"><div class="field"><label>Time</label><input id="rTime" placeholder="e.g. 07:30 PM"></div><div class="field"><label>Title</label><input id="rTitle" placeholder="e.g. Evening medicine"></div><div class="field full"><label>Details</label><textarea id="rDetail" placeholder="Medicine name, water amount, walk route, prayer, meal or any routine."></textarea></div></div><div class="modal-actions"><button class="btn btn-ghost" id="cancelReminder">Cancel</button><button class="btn btn-primary" id="saveReminder">Add reminder</button></div>`);$('#cancelReminder').onclick=closeModal;$('#saveReminder').onclick=()=>{const title=$('#rTitle').value.trim();if(!title){toast('Add a reminder title');return}reminders.push({id:Date.now(),time:$('#rTime').value.trim()||'Any time',title,detail:$('#rDetail').value.trim()||'Caregiver reminder',icon:'🔔'});saveAll();closeModal();renderReminders();renderPatientRoutines();toast('Reminder added to patient My Day')}
+function renderReminders(){const box=$('#reminderList');if(!box)return;box.innerHTML=reminders.map(r=>`<div class="routine"><div class="time">${esc(r.time)}</div><div class="task-icon">${r.icon||'🔔'}</div><div class="routine-main"><b>${esc(r.title)}</b><small>${esc(r.detail)}</small></div><button class="btn btn-danger btn-small" data-delete-rem="${r.id}">Remove</button></div>`).join('');$$('[data-delete-rem]').forEach(b=>b.onclick=()=>{reminders=reminders.filter(r=>r.id!=b.dataset.deleteRem);saveAll();renderReminders();renderPatientRoutines();toast('Reminder removed')})}
+$('#addReminderBtn').onclick=addReminderModal;$('#prescriptionFile').onchange=e=>{const f=e.target.files[0];if(f)toast(`Prescription selected: ${f.name}`)};$('#quickMedicine').onchange=e=>{if(e.target.value.trim()){reminders.push({id:Date.now(),time:'09:00 AM',title:e.target.value.trim(),detail:'Added from caregiver quick setup',icon:'💊'});saveAll();renderReminders();renderPatientRoutines()}};$('#quickWater').onchange=e=>{if(e.target.value.trim()){reminders.push({id:Date.now(),time:'Every 2 hours',title:e.target.value.trim(),detail:'Hydration reminder',icon:'💧'});saveAll();renderReminders();renderPatientRoutines()}};
+function renderTrends(){const avg=activityLog.length?Math.round(activityLog.reduce((a,x)=>a+x.accuracy,0)/activityLog.length):0;const c=$('#cTrends');if(!c)return;const strong=c.querySelector('.metric strong');if(strong)strong.textContent=avg+'%'}
+$('#reviewContext').onclick=()=>openModal('Context check',`<p>Before treating a repeated deviation as meaningful, check what was happening around the patient.</p><div class="demo-options"><button class="demo-option" onclick="closeModal();toast('Context recorded: temporary fatigue')">😴 Patient was tired</button><button class="demo-option" onclick="closeModal();toast('Context recorded: routine changed')">🔄 Routine changed today</button><button class="demo-option" onclick="closeModal();toast('No temporary context found')">✓ No temporary context found</button></div>`);
+$$('[data-setting]').forEach(b=>b.onclick=()=>{const k=b.dataset.setting;settings[k]=!settings[k];b.classList.toggle('on',settings[k]);saveAll();toast('Accessibility preference updated')});
+$$('[data-lang]').forEach(b=>b.onclick=()=>{patient.language=b.dataset.lang;$('#patientLanguageText').textContent=patient.language;$$('[data-lang]').forEach(x=>x.classList.toggle('btn-soft',x===b));toast(`Language set to ${patient.language}`)});
+$('#logoutBtn').onclick=()=>{toast('Demo logged out — returning to NeuroSathi welcome');setTimeout(()=>{$('#boot').classList.remove('hidden');$('#welcome').classList.remove('hidden');$('#roles').classList.add('hidden')},500)};
+$('#journalSend').onclick=()=>journalReply($('#journalInput').value);$('#journalInput').addEventListener('keydown',e=>{if(e.key==='Enter')journalReply(e.target.value)});
+function journalReply(text){text=text.trim();if(!text)return;addBubble(text,'me');$('#journalInput').value='';const prompts=['What happened today that made you smile?','Did you meet or speak with someone you enjoy being with?','What was one thing you did today?','Would you like to remember anything special from today?'];const q=prompts[journals.length%prompts.length];addBubble(q,'ai');journals.push({date:new Date().toLocaleDateString('en-IN'),text,question:q});saveAll();toast('Today’s journal updated for caregiver review')}
+function addBubble(t,who){const c=$('#chat');const d=document.createElement('div');d.className='bubble '+who;d.textContent=t;c.appendChild(d);c.scrollTop=c.scrollHeight}
+$('#journalVoice').onclick=()=>{const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){toast('Voice input is not supported by this browser');return}const r=new SR();r.lang='en-IN';r.onstart=()=>toast('Listening…');r.onresult=e=>journalReply(e.results[0][0].transcript);r.start()};
+function applySettings(){if(settings.large)document.body.classList.add('large-text');if(settings.contrast)document.body.style.filter='contrast(1.08)';}
+renderPatientGames();renderPatientMemories();renderStory();renderPatientRoutines();renderCaregiverMemories();renderCaregiverGames();renderReminders();renderActivityTable();renderTrends();applySettings();
+let slide=0;setInterval(()=>{const s=$('#homeSlides'),d=$('#homeDots');if(!s||!d)return;slide=(slide+1)%3;s.style.transform=`translateX(-${slide*100}%)`;[...d.children].forEach((x,i)=>x.classList.toggle('active',i===slide))},4200);
+setTimeout(()=>$('#boot').classList.remove('hidden'),100);
