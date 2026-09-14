@@ -4,6 +4,27 @@
 
 NeuroSathi is a lightweight prototype designed for the North Eastern Region (NER). Instead of treating every user as a generic test profile, it builds a **Personal Cognitive Fingerprint** from caregiver-approved familiar memories, routines, people, places and interests. Activities can then be personalized around that context.
 
+## Two-portal experience
+
+NeuroSathi now separates the experience into two clear portals so each user sees only the information relevant to their role.
+
+### Patient Portal — simple and activity-focused
+- **Home:** today's progress, next recommended activity and quick actions
+- **My Activities:** Memory Match, Sequence My Day, Pattern Match and Object Recall
+- **My Memories:** familiar people, places, routines, songs and events
+- **My Day:** simple routine and activity reminders
+- **Help:** voice-assisted guidance and caregiver support
+
+### Caregiver Portal — monitoring and context-focused
+- **Dashboard:** patient overview, activity performance and review prompts
+- **Contextual Change Map:** baseline, context checks and repeated-deviation signals
+- **Activity Monitoring:** recent scores, error patterns and activity context
+- **Patient Profile:** Personal Cognitive Fingerprint and personal domains
+- **Memory Anchors:** review/add caregiver-approved familiar context
+- **Settings:** privacy, context feedback, voice and clinical boundary
+
+This separation keeps the patient interface calm and simple while giving caregivers the monitoring and explainability tools they need.
+
 ## What makes the prototype different
 
 ### 1. Personal Cognitive Fingerprint
@@ -58,9 +79,11 @@ Repeated familiar deviation?
 
 ## Prototype modules
 
-- Overview dashboard
+- Patient Portal
+- Caregiver Portal
 - Personal Cognitive Fingerprint
-- Personalized activities
+- Personalized patient activities
+- Caregiver activity monitoring
 - Contextual Change Map
 - Memory anchors
 - Caregiver context review
@@ -85,11 +108,13 @@ NeuroSathi is intended for **cognitive engagement and caregiver support**. A pro
 
 ## Judge demo
 
-1. Open **Personal Cognitive Fingerprint** and show the person's 10 familiar anchors.
-2. Open **Activities** and show that the recommended task is based on a familiar routine.
-3. Open **Contextual Change Map**.
-4. Compare an unfamiliar low score (no signal) with a repeated familiar deviation (review signal).
-5. Click **Review context** and select a temporary context such as fatigue. Explain how caregiver feedback prevents an isolated observation from becoming an overconfident conclusion.
+1. Open **Patient Portal** and show the simple home screen.
+2. Open **My Activities** and demonstrate **Sequence My Day** or **Memory Match**.
+3. Switch to **Caregiver Portal** and show the dashboard.
+4. Open **Contextual Change Map**.
+5. Compare an unfamiliar low score (no signal) with a repeated familiar deviation (review signal).
+6. Click **Review context** and select a temporary context such as fatigue. Explain how caregiver feedback prevents an isolated observation from becoming an overconfident conclusion.
+7. Open **Memory Anchors / Patient Profile** to show how the caregiver-approved personal context feeds personalization.
 
 ## Important claims discipline
 
