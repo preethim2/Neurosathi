@@ -1,121 +1,101 @@
 # NeuroSathi
 
-**Personalized cognitive engagement and contextual caregiver support for elderly people living with dementia.**
+**AI-assisted cognitive gaming and memory assistance platform for elderly people and caregivers in the North Eastern Region (NER).**
 
-NeuroSathi is a lightweight prototype designed for the North Eastern Region (NER). Instead of treating every user as a generic test profile, it builds a **Personal Cognitive Fingerprint** from caregiver-approved familiar memories, routines, people, places and interests. Activities can then be personalized around that context.
+> **Core idea: From Life Memories to Personalized Cognitive Tasks.**
 
-## Two-portal experience
+NeuroSathi keeps the patient experience intentionally simple while giving the caregiver a detailed workspace for memories, routines, activity analysis, personal trends and contextual alerts.
 
-NeuroSathi now separates the experience into two clear portals so each user sees only the information relevant to their role.
+## Product flow
 
-### Patient Portal — simple and activity-focused
-- **Home:** today's progress, next recommended activity and quick actions
-- **My Activities:** Memory Match, Sequence My Day, Pattern Match and Object Recall
-- **My Memories:** familiar people, places, routines, songs and events
-- **My Day:** simple routine and activity reminders
-- **Help:** voice-assisted guidance and caregiver support
+`NeuroSathi welcome → Choose Patient / Caregiver → focused portal`
 
-### Caregiver Portal — monitoring and context-focused
-- **Dashboard:** patient overview, activity performance and review prompts
-- **Contextual Change Map:** baseline, context checks and repeated-deviation signals
-- **Activity Monitoring:** recent scores, error patterns and activity context
-- **Patient Profile:** Personal Cognitive Fingerprint and personal domains
-- **Memory Anchors:** review/add caregiver-approved familiar context
-- **Settings:** privacy, context feedback, voice and clinical boundary
+### Patient Portal
 
-This separation keeps the patient interface calm and simple while giving caregivers the monitoring and explainability tools they need.
+The patient sees only four simple destinations:
 
-## What makes the prototype different
+1. **Home** — Good morning greeting, three automatically scrolling daily cards, today's tasks, weather and progress.
+2. **Games** — Personalized games generated from caregiver-approved memories.
+3. **Memories** — Storybook/reel-like memory cards, photos, voice narration, add-memory camera/upload flow and **My Story** daily voice/text journal.
+4. **My Day** — Caregiver-created routines, medicines, hydration, walks and other time-based reminders.
 
-### 1. Personal Cognitive Fingerprint
-The system represents the person's familiar context as a small set of memory anchors. These can include family members, familiar places, daily routines, occupation, hobbies, songs and meaningful events.
+### Caregiver Portal
 
-**Life memories → personal context → cognitive activities**
+1. **Dashboard** — caregiver/patient relationship, sessions, completion rate, average duration, pending tasks and notifications.
+2. **Contextual Change Map** — performance is interpreted against the patient's own recent baseline with familiarity, evidence quality and repeated-deviation context.
+3. **Patient** — profile, age, region, language, voice instructions, large text, contrast, reading ability and blue-light preferences.
+4. **Activities** — date, game, domain, accuracy, level, duration and status.
+5. **Memories** — add family, places, objects, routines, hobbies, music, occupations and events with photo/video/voice/story context.
+6. **Reminders** — prescription upload/selection plus typed medicine, hydration and routine instructions.
+7. **Trends & Alerts** — memory, attention, recognition, sequencing, pattern and engagement compared with the patient's own recent baseline.
+8. **Settings** — caregiver account, relationship, notifications, privacy and logout.
 
-### 2. Contextual Change Map
-A low score is not automatically treated as a concerning change. The prototype considers familiarity, language/context match, evidence quality, response pattern, repeated deviation and caregiver context notes.
+## Personalized memory-to-game engine
 
-A caregiver signal is intended to prompt a human context check, **not to diagnose dementia**.
+Every approved memory can immediately produce a matching activity template:
 
-### 3. Explainable personalization
-The prototype can explain why an activity was selected: familiar anchors, recent error type, difficulty adjustment and context. This makes the logic inspectable rather than presenting an unexplained AI score.
+| Caregiver memory | Generated activity |
+|---|---|
+| Family member + photo | **Identify the Person** / name recognition |
+| Family member + relationship | **Who Is This?** / relationship recall |
+| Place + photo | **Where Is This?** / place recall |
+| Object + photo | **My Familiar Object** / object recognition |
+| Routine | **My Routine** / sequencing |
+| Event + photo/story | **Memory Refinding** / autobiographical recall |
+| Hobby | **My Favourite Activity** / association |
+| Music/voice cue | **Memory Song Cue** |
+| Occupation | **My Work Story** |
 
-## Prototype status
+The source memory remains visible in the caregiver view so the personalization is explainable.
 
-This is a **research/demo prototype**, not a clinical device. The current implementation uses client-side JavaScript and explainable rule/statistical logic. It does **not** claim to contain a trained machine-learning model, diagnose dementia, predict disease progression, or replace professional medical care.
+## My Story
 
-The demo runs as a static GitHub Pages site. Demo profile information is illustrative and stored locally in the browser; no backend or real patient database is included.
+The patient can type or speak about the day. NeuroSathi asks gentle follow-up questions such as what happened, who they met and what made them happy. The conversation is stored as a daily journal entry that can be surfaced to the caregiver.
 
-## Core workflow
+## Contextual Change Map
 
-```text
-Caregiver-approved memories
-          ↓
-Personal Cognitive Fingerprint
-          ↓
-Personalized activity selection
-          ↓
-Observe accuracy + error type + response pattern
-          ↓
-Context check
-          ↓
-Repeated familiar deviation?
-       ↙           ↘
-     No             Yes
-     ↓               ↓
- Continue        Caregiver review
-                    ↓
-              Context feedback
-```
+The prototype does **not** treat one bad score as a diagnosis. It checks:
 
-## Technical architecture
+- familiarity of the task
+- evidence quality
+- repeated deviation
+- recent personal baseline
+- caregiver context notes
 
-- **Frontend:** HTML5, CSS3, vanilla JavaScript
-- **State:** browser LocalStorage for prototype/demo state
-- **Voice:** Web Speech API where supported by the browser
-- **Personalization:** deterministic, explainable client-side logic in the prototype
-- **Deployment:** static hosting / GitHub Pages
-- **Future ML layer:** once ethically collected longitudinal data and validation are available, a supervised/anomaly-detection layer can be evaluated against the rule-based baseline.
+This produces a caregiver review prompt rather than a clinical diagnosis.
 
-## Prototype modules
+## NER language layer
 
-- Patient Portal
-- Caregiver Portal
-- Personal Cognitive Fingerprint
-- Personalized patient activities
-- Caregiver activity monitoring
-- Contextual Change Map
-- Memory anchors
-- Caregiver context review
-- Voice assistance demo
-- Privacy and clinical-boundary settings
+The caregiver profile includes seven regional language options for the Seven Sister states: Assamese, Nyishi, Meitei, Khasi, Mizo, Nagamese and Kokborok. Actual speech recognition/TTS availability depends on browser and language support; the prototype should not be presented as clinically validated multilingual speech recognition.
 
-## Responsible-use boundary
+## Current prototype technology
 
-NeuroSathi is intended for **cognitive engagement and caregiver support**. A prototype signal is an observation prompt only. Any real-world clinical interpretation must be performed by qualified healthcare professionals.
+- HTML5
+- CSS3
+- Vanilla JavaScript
+- LocalStorage for demo persistence
+- Web Speech API where supported
+- Explainable rule-based personalization
 
-## 5-day implementation plan
+### Important AI boundary
 
-**Day 1 — Discovery & co-design:** caregiver interviews, accessibility review, NER language requirements and consent/privacy requirements.
+The current browser prototype uses deterministic, explainable personalization logic. It is **not a trained ML model**, does not diagnose dementia, does not predict disease progression and does not replace medical care. A future validated ML layer should only be added after ethically collected longitudinal data and appropriate clinical/privacy validation.
 
-**Day 2 — Personalization foundation:** memory-anchor model, profile creation and activity templates.
+## Demo-ready flow
 
-**Day 3 — Contextual Change Map:** baseline logic, context overrides, repeated-deviation logic and explainable event log.
+1. Open NeuroSathi.
+2. Enter the app.
+3. Choose **Caregiver Portal**.
+4. Open **Memories**.
+5. Add a family member/photo/story.
+6. Show the instantly generated **Identify the Person** game.
+7. Switch to **Patient Portal**.
+8. Show the clean Good Morning home screen and auto-scrolling cards.
+9. Open **Games** and play the generated activity.
+10. Open **Memories** → storybook → voice narration → My Story.
+11. Open **My Day** to show caregiver-created routines.
+12. Return to caregiver **Contextual Change Map** and **Trends & Alerts**.
 
-**Day 4 — Accessibility & validation:** large-touch UI, voice interaction, language testing, usability testing with caregivers/older adults where ethically approved.
+## Responsible use
 
-**Day 5 — Evaluation & deployment:** bug fixing, evidence capture, documentation, GitHub Pages deployment and demo rehearsal.
-
-## Judge demo
-
-1. Open **Patient Portal** and show the simple home screen.
-2. Open **My Activities** and demonstrate **Sequence My Day** or **Memory Match**.
-3. Switch to **Caregiver Portal** and show the dashboard.
-4. Open **Contextual Change Map**.
-5. Compare an unfamiliar low score (no signal) with a repeated familiar deviation (review signal).
-6. Click **Review context** and select a temporary context such as fatigue. Explain how caregiver feedback prevents an isolated observation from becoming an overconfident conclusion.
-7. Open **Memory Anchors / Patient Profile** to show how the caregiver-approved personal context feeds personalization.
-
-## Important claims discipline
-
-The prototype deliberately avoids unsupported clinical impact claims. It demonstrates a **personalization and caregiver-support mechanism** that can be evaluated through future user studies; it is not evidence that the system slows cognitive decline.
+NeuroSathi is a cognitive engagement and caregiver-support prototype. Activity scores are intended to help caregivers observe patterns and context; they are not diagnostic measurements.
